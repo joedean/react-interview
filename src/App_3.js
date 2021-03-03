@@ -1,17 +1,18 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import './App.css';
-import axios = require('axios').default;
-
-const {useState} = React;
-
-// https://randomuser.me/api
+import axios from 'axios';
 
 function App() {
-  const [counter, setCounter] = React.useState(0);
+  const [counter, setCounter] = useState(0);
+  const [userData, setUserData] = useState('');
+
+  useEffect(() => {
+    getUserData().then(res => { setUserData(res || 'Unable to fetch user data'); });
+  }, []);
 
   return (
     <div className='App'>
-      <h1>Hello Sandbox</h1>
+      <h1>Hello React Sandbox</h1>
       <div>
         <p>
           {counter}
@@ -21,24 +22,25 @@ function App() {
           }}>
           Increase Counter
         </button>
+
+        <h2>Random User Data</h2>
+        <pre>
+          {userData}
+        </pre>
       </div> 
     </div>
   );
 }
 
-function getData() {
-  axios.get('https://randomuser.me/api')
-  .then((response) => {
-    // handle success
-    console.log(response);
+function getUserData(setUserData) {
+  return axios.get('https://randomuser.me/api')
+  .then(({data}) => {
+    console.log(data);
+    return JSON.stringify(data, null, 2);
   })
   .catch((error) => {
-    // handle error
     console.log(error);
-  })
-  .then(() => {
-    // always executed
   });
-
 }
+
 export default App;
